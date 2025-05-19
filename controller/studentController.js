@@ -1,6 +1,8 @@
 const express = require('express');
 const {connection}=require('../utils/dbConnections')
-const Student=require('../models/Students')
+const Student=require('../models/Students');
+const { IdentityCard } = require('../models');
+const Department= require('../models/department')
 
 // const addStudents=(req,res)=>{
 //     const {email,name}=req.body;
@@ -66,9 +68,47 @@ const addStudents = async (req, res) => {
     }
 };
 
+const addValuesToStudentAndIdentityTable=async(req,res)=>{
+    try{
+        const student=await Student.create(req.body.students);
+        const idCard=await IdentityCard.create({
+            ...req.body.IdentityCard,
+            StudentId:student.id
+        })
+        res.status(200).json(student,idCard);
+
+    }catch(err){
+        res.status(500).send(err.message);
+
+    }
+}
+
+const addStudentsWithDepartment=async(req,res)=>{
+   try{
+    const {student,department}=req.body;
+    let dept= await Department.findOne({where:{name:department.name}});
+    
+    if(!dept){
+        dept= await Department.create({name:department.name})
+    }
+    const createdStudent=Student.create({
+        ...student,
+        departmentId:dept.id
+    })
+    res.status(201).json({
+        department:dept,
+        student:createdStudent
+    })
+   }catch(err){
+    res.status(500).send(err.message);
+
+   }
+
+}
 
 
 
-module.exports={addStudents}
+
+module.exports={addStudents,addValuesToStudentAndIdentityTable,addStudentsWithDepartment}
 
 //,updateStudent,getAllStudents

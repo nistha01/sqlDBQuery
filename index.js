@@ -5,13 +5,11 @@ const { FORCE } = require('sequelize/lib/index-hints');
 const app = express();
 
 
-const studenModel=require('./models/Students')
-
+//const studenModel=require('./models/Students')
+require('./models')
 
 app.use(express.json())
-app.get('/', (req, res) => {
-    res.send("hello world");
-})
+
 
 
 app.use('/students', studentRoute);
@@ -25,7 +23,7 @@ db.sync({force:true}).then(() => {
         console.log("Running on port 3000");
     });
 }).catch((err) => {
-    cjonsole.log(err);
+    console.log(err);
 
 })
 
