@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('./utils/dbConnections');
 const studentRoute = require('./routes/studentsRoute');
+const courseRoute=require('./routes/courseRoute')
 const { FORCE } = require('sequelize/lib/index-hints');
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json())
 
 
 app.use('/students', studentRoute);
+app.use('/course',courseRoute)
 
 db.sync({force:true}).then(() => {
     app.listen(3000, (err) => {
